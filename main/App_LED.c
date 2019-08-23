@@ -1,3 +1,19 @@
+/**
+ *********************************************************************
+ *
+ * @brief      LED handle function.
+ *
+ * @file       App_LED.c
+ *
+ *********************************************************************
+ */
+
+
+/*
+ *********************************************************************
+ *							INCLUDE FILES
+ *********************************************************************
+ */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -16,10 +32,28 @@
 #include "esp_task_wdt.h"
 #include <sys/time.h>
 
-
+/*
+ *********************************************************************
+ *                             DEFINES
+ *********************************************************************
+ */
 #define TAG "LED_BUZZER"
 
+/*
+ *********************************************************************
+ *                            VARIABLES
+ *********************************************************************
+ */
 static uint8_t Buzzer_Mode = 0;
+
+
+
+/*
+ *********************************************************************
+ *                  PUBLIC FUNCTIONS DEFINITIONS
+ *********************************************************************
+ */
+
 
 /**********************************************************************
  *@Brief Set the Buzzer's mode 
@@ -30,6 +64,8 @@ static uint8_t Buzzer_Mode = 0;
 void Buzzer_SetBuzzerMode(uint8_t BuzzerMode){
 	Buzzer_Mode = BuzzerMode;
 }
+
+
 /**********************************************************************
  *@Brief Set the Buzzer contorl PIN(GPIO5) to Output model 
  *@ return NULL
@@ -60,63 +96,77 @@ void Buzzer_SetBuzzerMode(uint8_t BuzzerMode){
 	 return ESP_OK;
  }
 
+/**********************************************************************
+* @Brief set the Buzzer status
+* @BuzzerMode: The Buzzer Mode: 
+*
+*
+***********************************************************************/
+void Buzzer_Set_Buzzer_Status(uint8_t BuzzerMode){
+	Buzzer_Mode = BuzzerMode;
+}
 
- 
+/**********************************************************************
+* @Brief Get the Buzzer status
+*  Return : the mode of the Buzeer
+*
+***********************************************************************/
+void Buzzer_Get_Buzzer_Status(void){
+	return Buzzer_Mode;
+}
+
+
+
+/*
+ *********************************************************************
+ *                FILE LOCAL FUNCTIONS DEFINITIONS
+ *********************************************************************
+ */
+
+
 /**********************************************************************
 *@Brief the LED_BUZZER handle task
 *@ return NULL
 *
 ***********************************************************************/
  static void LED_Buzzer_task(void* arg){
-    
+ 	uint8_t BuzzerMode = 0;
+	
     while(1){
-		//
-		switch(){
-			case ：
-				
-					vTaskDelay(1000/portTICK_RATE_MS);
-					break;
-				
-			case 接收配对命令：
-				｛
-					高500ms
-					低250ms
-					高500ms
-					低
-					将其改为Idle 模式
-					break;
-				｝
-			case 接收解配命令：
-				｛
-					高500ms
-					低250ms
-					高500ms
-					低
-					将其改为Idle 模式
-					break;
-				｝
-			case 接收其他命令：
-				｛
-					高1000
-					低；
-					将其改为Idle 模式
-					break;
-				｝
-				
-			case 报警：
-				｛
-					高1000ms
-					低1000ms
-				｝
-			case default:
-				vTaskDelay(1000/portTICK_RATE_MS);
+		
+	   BuzzerMode = Buzzer_Get_Buzzer_Status();
+	   
+		switch(BuzzerMode){
+			case BUZZER_IDLE_MODE：
+				vTaskDelay(200/portTICK_RATE_MS);
 				break;
+				
+			case BUZZER_PAIR_MODE：
+			case BUZZER_UNPAIR_MODE：
+				
+				 BUZZER_ON;
+				 vTaskDelay(300/portTICK_RATE_MS);
+				 BUZZER_OFF;
+				 vTaskDelay(300/portTICK_RATE_MS);
+				 BUZZER_ON;
+				 vTaskDelay(300/portTICK_RATE_MS);
+				 BUZZER_OFF
+				 break;
+				
+			case BUZZER_WARN_MODE：
+				 BUZZER_ON;
+				 vTaskDelay(300/portTICK_RATE_MS);
+				 BUZZER_OFF;
+				
+			case BUZZER_OTHER_MODE：
+				 BUZZER_ON;
+				 vTaskDelay(300/portTICK_RATE_MS);
+				 BUZZER_OFF;
+			default:
+				 vTaskDelay(200/portTICK_RATE_MS);
+				 break;
 		
 		}
-		BUZZER_ON;
-		vTaskDelay(10);
-		BUZZER_OFF;
-		vTaskDelay(10);
 		
     }
  }
