@@ -14,6 +14,8 @@
  * express or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
+
+
 /**
  * @file thing_shadow_sample.c
  * @brief A simple connected window example demonstrating the use of Thing Shadow
@@ -45,6 +47,7 @@
 #include "aws_iot_version.h"
 #include "aws_iot_mqtt_client_interface.h"
 #include "aws_iot_shadow_interface.h"
+#include "App_LED.h"
 
 /*!
  * The goal of this sample application is to demonstrate the capabilities of shadow.
@@ -146,6 +149,7 @@ static esp_err_t event_handler(void *ctx, system_event_t *event)
     return ESP_OK;
 }
 
+
 static void simulateRoomTemperature(float *pRoomTemperature) {
     static float deltaChange;
 
@@ -178,6 +182,7 @@ void ShadowUpdateStatusCallback(const char *pThingName, ShadowActions_t action, 
     }
 }
 
+
 void windowActuate_Callback(const char *pJsonString, uint32_t JsonStringDataLen, jsonStruct_t *pContext) {
     IOT_UNUSED(pJsonString);
     IOT_UNUSED(JsonStringDataLen);
@@ -186,6 +191,8 @@ void windowActuate_Callback(const char *pJsonString, uint32_t JsonStringDataLen,
         ESP_LOGI(TAG, "Delta - Window state changed to %d", *(bool *) (pContext->pData));
     }
 }
+
+
 //Dicktest1   074784332591 
 void aws_iot_task(void *param) {
     IoT_Error_t rc = FAILURE;
@@ -345,6 +352,7 @@ void aws_iot_task(void *param) {
     vTaskDelete(NULL);
 }
 
+
 static void initialise_wifi(void)
 {
     tcpip_adapter_init();
@@ -375,8 +383,9 @@ void app_main()
     }
     ESP_ERROR_CHECK( err );
 
-    initialise_wifi();
+   // initialise_wifi();
+	SMF_Buzzer_init();
     /* Temporarily pin task to core, due to FPU uncertainty */
-    xTaskCreatePinnedToCore(&aws_iot_task, "aws_iot_task", 9216, NULL, 5, NULL, 1);
+  //  xTaskCreatePinnedToCore(&aws_iot_task, "aws_iot_task", 9216, NULL, 5, NULL, 1);
 	
 }
